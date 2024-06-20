@@ -5,6 +5,7 @@ import Home from "./pages/Home"
 import Cadastro from "./pages/Cadastro"
 
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { ThemeProvider } from './contexts/ThemeContext';
 
 const router = createBrowserRouter([
   {
@@ -18,15 +19,15 @@ const router = createBrowserRouter([
 ])
 
 function App() {
-  
+
   return (
-    <div>
+    <ThemeProvider>
       <Cabecalho/>
-      <main className='container-lg mt-5'>
-        <RouterProvider router={router} />
+      <main className={`container-lg mt-5`}>
+        <RouterProvider router={router}/>
       </main>
       <Rodape/>
-    </div>
+    </ThemeProvider>
   )
 }
 

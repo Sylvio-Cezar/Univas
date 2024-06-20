@@ -3,15 +3,19 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
 import Botao from '../components/Botao.jsx'
-import Cabecalho from '../components/Cabecalho.jsx'
-import Rodape from '../components/Rodape/index.jsx'
 import Titulo from '../components/Titulo.jsx'
+import { useTheme } from '../contexts/ThemeContext';
 
 function Home() {
   const [usuarios, setUsuarios] = useState([])
   const [erro, setErro] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [nome, setNome] = useState("")
+  const { theme, setTheme } = useTheme();
+
+  const toggleTheme = () => {
+    setTheme(theme === 'light' ? 'dark' : 'light');
+  };
 
   useEffect(() => {
     if(nome != "" && nome.length > 3 && !isLoading){
@@ -67,24 +71,11 @@ function Home() {
     axios.patch(`http://localhost:3000/usuarios/${id}`, { ativo: 1 })
       .then(res => {
         console.log(res.data)
-        setIsLoading(true)
+        setUsuarios([]) 
       })
       .catch(res => {
         console.log(res.data)
         setErro("Não foi possível atualizar os dados do usuário.")
-      })
-  }
-
-  function deletarUsuario(id){
-    // PATCH
-    axios.delete(`http://localhost:3000/usuarios/${id}`)
-      .then(res => {
-        console.log(res.data)
-        setIsLoading(true)
-      })
-      .catch(res => {
-        console.log(res.data)
-        setErro("Não foi possível deletar os dados do usuário.")
       })
   }
 
@@ -98,7 +89,7 @@ function Home() {
     )
   }else{
     return (
-      <> 
+      <div data-bs-theme={theme} className={`bg-${theme} text-${theme == 'dark' ? 'white' : 'black'}`}> 
         <div className='row'>
             <div className='col-3'>
                 <label htmlFor="_nome">Nome</label>
@@ -107,6 +98,10 @@ function Home() {
             <div className='col'>
                 <div className='d-flex align-items-end justify-content-end'>
                     <Link to={"/cadastro"} className="btn btn-primary">Novo registro</Link>
+                    <div className="form-check form-switch mx-2">
+                      <input className="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" onInput={toggleTheme}/>
+                      <label className="form-check-label" htmlFor="flexSwitchCheckDefault">{theme}</label>
+                  </div>
                 </div>
             </div>
         </div>
@@ -140,7 +135,6 @@ function Home() {
                             {
                                 usuario.ativo == 0 && <Botao tipo="success" acao={() => ativarUsuario(usuario.id)}>Ativar</Botao>
                             }
-                              <Botao tipo="danger" acao={() => deletarUsuario(usuario.id)}>Excluir</Botao>
                             </td>
                         </tr>
                         )
@@ -150,7 +144,7 @@ function Home() {
                 </table>
             </div>
         </div>
-      </>
+      </div>
     )
   }
   

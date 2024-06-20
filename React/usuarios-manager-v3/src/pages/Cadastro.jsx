@@ -10,7 +10,7 @@ function Cadastro(){
         nome: "",
         tipo: ""
     })
-
+    
     function handleNome(event){
         const {value} = event.target
         let nomeInvalido = false
